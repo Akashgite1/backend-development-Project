@@ -32,10 +32,34 @@
 // src file is used to keep the source code of the project 
 // made the src folder 
 
+//^ nodemon
 // nodemon is used to run the server when we make changes in the code nodemon automatically restarts the server so we do not have to restart the server again and again  
 // npm install nodemon --save-dev 
 
 //! mkdir is used to make the folder 
 // mkdir foldername 
 // example mkdir src database
+
+//^ prettier code formatter 
+// its used to format the code accourding the rules that we have set for a project 
+// example code line format, code line length, code line spacing 
+// npm install prettier --save-dev  --> for installing the prettier 
+// create the file name  .prettierrc --> for setting the rules for the prettier 
+// you can set the rules for the prettier in the .prettierrc file 
+// ex 
+// {
+//     "singleQuote": true, --> single quote are allowed 
+//     "semi": false,       --> semicolon are not allowed
+//     "tabWidth": 4,       --> tab width is 4
+//     "useTabs": true      --> use tabs are allowed
+// } for more rules and usage visit the prettier documentation
+
+//! .prettierignore 
+// we can add those files her that we dont want it format its code 
+
+
+//! imported 3 packges  {npm i express dotenv mongoose} -- command to install the packages  
+// express for creating the server 
+// dotenv for using the env file 
+// mongoose for connecting the database 
 
