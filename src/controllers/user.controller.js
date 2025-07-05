@@ -4,6 +4,7 @@ import { User } from '../models/user.model.js';
 import { uploadFile } from '../utils/cloudinary_File_upload.js';
 import { ApiResponse } from '../utils/APiResponce.js';
 import jwt from 'jsonwebtoken';
+import { application } from 'express';
 
 
 // creating methods for genarating access token and refresh token 
@@ -33,7 +34,6 @@ const generateAccessAndRefreshTokens = async (userId) => {
         throw new ApiErrors(500, "Error generating tokens");
     }
 }
-
 
 
 // use export direct her to export the function for other files 
@@ -433,9 +433,8 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     )
 })
 
-// use of aggregation pipeline to get the user channel profile
+// Use of Aggregation Pipeline To Get The User Channel Profile
 // this will get the user profile with the subscribers and subscriptions count
-
 const getUserChannelProfile = asyncHandler(async (req, res) => {
     // get the user id from the request params
     // param is a part of the url that is used to identify a resource
@@ -491,7 +490,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
         },
         {
             $project: { // this will project the fields that we want to return in the response
-               // for retrun values we use      fieald : 1
+                // for retrun values we use      fieald : 1
                 _id: 1,
                 fullName: 1,
                 userName: 1,
@@ -514,13 +513,76 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 
     // print the values of channel
     console.log("channel : ", channel);
-    
+
     // return the channel profile
     return res.status(200).json(
         // return channel[0] because we are getting only one channel profile
         // channel[0] is the first element of the channel array
         new ApiResponse(200, channel[0], "User channel profile fetched successfully")
     )
+
+})
+
+
+// Get The Watch History of The User
+const getWatchHistory = asyncHandler(async (req, res) => {
+
+    const user = await User.aggregate([ // this will aggregate the data from the user collection
+        {
+            $match: {
+                _id: new mongoose.types.objectId(req.user._id) // match the user id from the request object
+            }
+        },
+        {
+            $lookup: {
+                from: "videos",
+                localField: "watchHistory", // this is the field in the user collection
+                foreignField: "_id", // this is the field in the videos collection
+                as: "watchHistoryVideos", // this is the field in the output document
+                //! add further pipeline called Nested pipeline inside one another
+                pipeline: [
+                    {
+                        $lookup: {
+                            from: "users",
+                            localField: "owner",
+                            foreignField: "_id",
+                            as: "owner",
+                            // Nested pipeline to get the owner details
+                            pipeline: [
+                                {
+                                    $project: {
+                                        fullName: 1,
+                                        userName: 1,
+                                        avatar: 1
+                                    }
+
+                                }
+                            ]
+                        }
+                    },
+                    {   // this will add the owner field to the output document
+                        // $addFields is used to add new fields to the output document  
+                        $addFields: {
+                            owner: {
+                                $first: "$owner" // this will get the first element of the owner array
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ])
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                user[0]?.watchHistoryVideos, // if user[0] is undefined then return empty array
+                "User watch history fetched successfully" // message    
+
+            )
+        )
 
 })
 
@@ -536,5 +598,6 @@ export {
     updateUserAvatar,
     updateUserCoverImage,
     getUserChannelProfile,
+    getWatchHistory
 
 }
