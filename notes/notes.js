@@ -63,3 +63,30 @@
 // dotenv for using the env file 
 // mongoose for connecting the database 
 
+// use of cors and cookie-parser 
+// cors is used to connect the frontend and backend by allowing the request from the frontend
+// cookie-parser is used to parse the cookie
+
+//! user.model.js and usermodel.js both are same its just the naming convention
+
+
+//! importing the class or function from other file 
+// import { className {which declared in other file time of export} } 
+// from './fileName.js {define the file path and the name given to the file}';
+
+// both can be different 
+
+// example 
+class akash{
+    akash() {
+        console.log("akash");
+    }
+}
+
+export { akash }; // exporting the class akash simple export 
+// for importing it i have to use same name as given in the export 
+//! if i want to use different name while importing then i have to use export default
+
+import { akash as akash1 } from './notes.js'; // importing the class akash and renaming it to akash1
+
+// the function or class and the file name can be diffrferent 
