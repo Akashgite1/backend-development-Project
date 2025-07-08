@@ -435,8 +435,8 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
     )
 })
 
-// Use of Aggregation Pipeline To Get The User Channel Profile
 
+// Use of Aggregation Pipeline To Get The User Channel Profile
 // this will get the user profile with the subscribers and subscriptions count
 const getUserChannelProfile = asyncHandler(async (req, res) => {
     // get the user id from the request params
