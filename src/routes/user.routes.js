@@ -1,6 +1,5 @@
 import { Router } from "express"
 import { registerUser, loginUser, logoutUser, refreshAccessToken, getCurrentUser, changeCurrentPassword, updateAccountDetails, updateUserAvatar, updateUserCoverImage, getUserChannelProfile, getWatchHistory } from "../controllers/user.controller.js"
-
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 
@@ -33,7 +32,7 @@ router.route("/login").post(loginUser) // at route /login the method loginuser r
 router.route("/logout").post(verifyJWT, logoutUser);
 router.route("refresh-token").post(refreshAccessToken);
 router.route("/change-password").post(verifyJWT, changeCurrentPassword)
-router.route("/current-usr").get(verifyJWT, getCurrentUser) // this is to get the current user details
+router.route("/current-user").get(verifyJWT, getCurrentUser) // this is to get the current user details
 
 //! router working explanation
 router
@@ -44,7 +43,7 @@ router
 )
 
 router.route("/avatar").patch(verifyJWT, upload.single("avatar"), updateUserAvatar)
-router.route("/cover-image").patch(verifyJWTm, upload.single("coverImage"), updateUserCoverImage)
+router.route("/cover-image").patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage)
 router.route("/channel/:username").get(verifyJWT, getUserChannelProfile) // this is to get the user channel profile by username
 router.route("/watch-history").get(verifyJWT, getWatchHistory) // this is to get the user's watch history with video owner details
 

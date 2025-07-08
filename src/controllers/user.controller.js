@@ -5,6 +5,7 @@ import { uploadFile } from '../utils/cloudinary_File_upload.js';
 import { ApiResponse } from '../utils/APiResponce.js';
 import jwt from 'jsonwebtoken';
 import { application } from 'express';
+import mongoose from 'mongoose';
 
 
 // creating methods for genarating access token and refresh token 
@@ -200,8 +201,9 @@ const logoutUser = asyncHandler(async (req, res) => {
         req.user._id,
         {
             // set is used to update the document provided by the mongoose
-            $set: {
-                refreshToken: "" // this will set the refresh token to empty string
+            // or use unset to mark the field as empty 
+            $unset: {
+                refreshToken: 1 // this will set the refresh token to empty string
             }
         },
         {
@@ -434,6 +436,7 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
 })
 
 // Use of Aggregation Pipeline To Get The User Channel Profile
+
 // this will get the user profile with the subscribers and subscriptions count
 const getUserChannelProfile = asyncHandler(async (req, res) => {
     // get the user id from the request params
@@ -461,6 +464,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
                 foreignField: "channel", // this is the field in the subscription collection
                 as: "subscriber", // this is the field in the output document
             }
+
         },
         {
             $lookup: {
@@ -474,7 +478,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
             // add additional fields to the output document with privious fields
             $addFields: {
                 subscribersCount: {
-                    $size: "$subscribers" // this will get the count of subscribers
+                    $size: "$subscriber" // this will get the count of subscribers
                 },
                 ChannelSubscribedToCount: {
                     $size: "$SubscribedTo" // this will get the count of channels subscribed to
@@ -530,7 +534,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
     const user = await User.aggregate([ // this will aggregate the data from the user collection
         {
             $match: {
-                _id: new mongoose.types.objectId(req.user._id) // match the user id from the request object
+                _id: new mongoose.Types.ObjectId(req.user._id) // match the user id from the request object
             }
         },
         {
@@ -598,6 +602,6 @@ export {
     updateUserAvatar,
     updateUserCoverImage,
     getUserChannelProfile,
-    getWatchHistory
+    getWatchHistory,
 
 }
