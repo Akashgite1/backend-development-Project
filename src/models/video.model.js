@@ -10,7 +10,7 @@ const videoSchema = new Schema(
             trim: true, // removes whitespace from both ends of the string
             unique: true, // ensures that the video file is unique
         },
-        thubnail:{
+        thumbnail:{
             type:String,
             required: true,
         },

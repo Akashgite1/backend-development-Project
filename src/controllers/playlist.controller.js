@@ -9,6 +9,7 @@ const createPlaylist = asyncHandler(async (req, res) => {
     const {name, description} = req.body
 
     //TODO: create playlist
+    
 })
 
 const getUserPlaylists = asyncHandler(async (req, res) => {
