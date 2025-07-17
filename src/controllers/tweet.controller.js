@@ -1,8 +1,8 @@
 import mongoose, { isValidObjectId } from "mongoose"
 import {Tweet} from "../models/tweet.model.js"
 import {User} from "../models/user.model.js"
-import {ApiError} from "../utils/ApiError.js"
-import {ApiResponse} from "../utils/ApiResponse.js"
+import {ApiErrors} from "../utils/APIErros.js"
+import {ApiResponse} from "../utils/APiResponce.js"
 import {asyncHandler} from "../utils/asyncHandler.js"
 
 // create a new tweet
@@ -15,7 +15,7 @@ const createTweet = asyncHandler(async (req, res) => {
 
     // check if the content exists and is not empty
     if(!content) {
-        throw new ApiError(400, "Content is required")
+        throw new ApiErrors(400, "Content is required")
     }
     
     // create a new tweet with the content and userId using the Tweet model in mongodb
@@ -36,7 +36,7 @@ const getUserTweets = asyncHandler(async (req, res) => {
 
     // check if the userId is a valid ObjectId in MongoDB
     if (!isValidObjectId(userId)) {
-        throw new ApiError(400, "Invalid user ID")
+        throw new ApiErrors(400, "Invalid user ID")
     }
      
     // find the user by userId in the database 
@@ -55,18 +55,18 @@ const updateTweet = asyncHandler(async (req, res) => {
 
     // check if the tweetId is a valid ObjectId in MongoDB
     if (!isValidObjectId(tweetId)) {
-        throw new ApiError(400, "Invalid tweet ID")
+        throw new ApiErrors(400, "Invalid tweet ID")
     }
     
     // hold the tweet to be updated
     const tweet = await Tweet.findById(tweetId)
 
     if(!tweet) {
-        throw new ApiError(404, "Tweet not found")
+        throw new ApiErrors(404, "Tweet not found")
     }
     // check if the user is author of the tweet to modify it or not
     if(tweet.owner.toString() !== userId.toString()) {
-        throw new ApiError(403, "You are not authorized to update this tweet")
+        throw new ApiErrors(403, "You are not authorized to update this tweet")
     }
 
     // update the tweet content with user provided content
@@ -89,7 +89,7 @@ const deleteTweet = asyncHandler(async (req, res) => {
 
     // check if the exist 
     if(!isValidObjectId(tweetId)) {
-        throw new ApiError(400, "Invalid tweet ID")
+        throw new ApiErrors(400, "Invalid tweet ID")
     }
 
     // hold the tweet to be deleted
@@ -97,11 +97,11 @@ const deleteTweet = asyncHandler(async (req, res) => {
 
     // check if the tweet exists
     if(!tweet) {
-        throw new ApiError(404, "Tweet not found")
+        throw new ApiErrors(404, "Tweet not found")
     }
     // check if the user is author of the tweet to delete it or not
     if(tweet.user.toString() !== userId.toString()) {
-        throw new ApiError(403, "You are not authorized to delete this tweet")
+        throw new ApiErrors(403, "You are not authorized to delete this tweet")
     }
 
     // delete the tweet

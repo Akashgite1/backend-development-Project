@@ -1,9 +1,10 @@
 import mongoose from "mongoose"
 import { Comment } from "../models/comment.model.js"
-import { APIErrors } from "../utils/APIErrors.js"
-import { APiResponse } from "../utils/APiResponse.js"
-import { asyncHandler } from "../utils/asyncHandler.js"
+import { ApiErrors } from "../utils/APIErros.js";
 import { ApiResponse } from "../utils/APiResponce.js"
+import { asyncHandler } from "../utils/asyncHandler.js"
+
+
 
 const getVideoComments = asyncHandler(async (req, res) => {
     //TODO: get all comments for a video
@@ -19,13 +20,13 @@ const getVideoComments = asyncHandler(async (req, res) => {
 
     // Check if comments exist if not throw an error 
     if (!comments) {
-        throw new APIErrors(404, "No comments found for this video")
+        throw new ApiErrors(404, "No comments found for this video")
     }
 
     // Return the comments in a paginated format
     return res
         .status(200)
-        .json(new APiResponse(200, comments, "Comments fetched successfully"))
+        .json(new ApiResponse(200, comments, "Comments fetched successfully"))
 
 })
 
@@ -35,7 +36,7 @@ const addComment = asyncHandler(async (req, res) => {
     const { content } = req.body // body gives the content of the comment text 
 
     if (!content) {
-        throw new APIErrors("Comment content is required", 400)
+        throw new ApiErrors("Comment content is required", 400)
     }
 
     const comment = new Comment({
@@ -56,12 +57,12 @@ const updateComment = asyncHandler(async (req, res) => {
     const comment = await Comment.findById(commentId) // find the comment by id
 
     if (!comment) {
-        throw new APIErrors(400, "Comment not found")
+        throw new ApiErrors(400, "Comment not found")
     }
 
     // Check if the user is authorized to update the comment by comparing the user id of the comment with the user id of the authenticated user
     if (comment.user.toString() !== req.user._id.toString()) {
-        throw new APIErrors(403, "You are not authorized to update this comment")
+        throw new ApiErrors(403, "You are not authorized to update this comment")
     }
     
     // Update the comment content
@@ -84,12 +85,12 @@ const deleteComment = asyncHandler(async (req, res) => {
     const comment = await Comment.findById(commentId)
 
     if (!comment) {
-        throw new APIErrors(400, "Comment not found connot be deleted")
+        throw new ApiErrors(400, "Comment not found connot be deleted")
     }
 
     // Check if the user is authorized to delete the comment by comparing the user id of the comment with the user id of the authenticated user
     if (comment.user.toString() !== req.user._id.toString()) {
-        throw new APIErrors(403, "You are not authorized to delete this comment")
+        throw new ApiErrors(403, "You are not authorized to delete this comment")
     }
 
     // Delete the comment from the database using mongoose's deleteOne method

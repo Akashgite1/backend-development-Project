@@ -23,11 +23,13 @@ app.use(cookieParser());
 // importing the routes
 import userRoutes from './routes/user.routes.js'
 import healthcheckRouter from './routes/healthcheck.route.js';
-import commentRouter from './comment.route.js'
-import dashboardRouter from './routes/dashboard.routes.js';
-import playlistRouter from './routes/playlists.routes.js';
-import videoRouter from './routes/video.routes.js';
-import tweetRouter from './routes/tweet.routes.js';
+import commentRouter from './routes/comment.route.js'
+import dashboardRouter from './routes/dashboard.route.js';
+import playlistRouter from './routes/playlist.route.js';
+import videoRouter from './routes/video.route.js';
+import tweetRouter from './routes/tweet.route.js';
+import SubscriptionRouter from './routes/subscription.route.js' 
+
 
 // routes declaration with the prefix /api/v1/user is a standard practice 
 // to version the API and keep it organized
@@ -38,6 +40,7 @@ app.use("/api/v1/dashboard", dashboardRouter);
 app.use("/api/v1/playlist", playlistRouter);
 app.use("/api/v1/video", videoRouter);
 app.use("/api/v1/tweet", tweetRouter);
+app.use("/api/v1/subscription", SubscriptionRouter);
 
 
 // http://localhost:5000/api/v1/user/register

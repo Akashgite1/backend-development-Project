@@ -1,8 +1,8 @@
 import mongoose, { isValidObjectId } from "mongoose"
 import { User } from "../models/user.model.js"
 import { Subscription } from "../models/subscription.model.js"
-import { ApiError } from "../utils/ApiError.js"
-import { ApiResponse } from "../utils/ApiResponse.js"
+import { ApiErrors } from "../utils/APIErros.js"
+import { ApiResponse } from "../utils/APiResponce.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 
 
@@ -16,12 +16,12 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 
     // check if the channelId and subscriberId are valid ObjectIds in MongoDB 
     if (!isValidObjectId(channelId) || !isValidObjectId(subscriberId)) {
-        throw new ApiError(400, "Invalid channel ID")
+        throw new ApiErrors(400, "Invalid channel ID")
     }
 
     // check if the user is trying to subscribe to their own channel
     if (subscriberId.tostring() === channelId.toString()) {
-        throw new ApiError(401, "cannot subscribe to your own channel")
+        throw new ApiErrors(401, "cannot subscribe to your own channel")
     }
 
     // check if the subscription already exists find the subscription by channelId and subscriberId in the Subscription model 
@@ -49,7 +49,7 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
     const { channelId } = req.params
 
-    if (!isValidObjectId(channelId)) throw new ApiError(400, "Invalid channel ID")
+    if (!isValidObjectId(channelId)) throw new ApiErrors(400, "Invalid channel ID")
 
     const subscribers = await Subscription.find({ channel: channelId }).populate("subscriber", "username email")
     return res.status(200).json(new ApiResponse(200, subscribers))
@@ -60,10 +60,10 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 const getSubscribedChannels = asyncHandler(async (req, res) => {
     const { subscriberId } = req.params
 
-    if (!isValidObjectId(subscriberId)) throw new ApiError(400, "Invalid subscriber ID")
-    
+    if (!isValidObjectId(subscriberId)) throw new ApiErrors(400, "Invalid subscriber ID")
+
     // subscriptions is a list of subscriptions where the user is a subscriber amd desciription is populated with channel details
-    const subscriptions = await Subscription.find({ subscriber : subscriberId}).populate("channel", "name description")
+    const subscriptions = await Subscription.find({ subscriber: subscriberId }).populate("channel", "name description")
 
     // send response with status 200 and subscriptions
     return res.status(200).json(new ApiResponse(200, subscriptions, "Subscribed channels fetched successfully"))
